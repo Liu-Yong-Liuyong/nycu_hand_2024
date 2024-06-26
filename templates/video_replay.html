@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Replay</title>
+    <style>
+        .video-container {
+            display: inline-block;
+            position: relative;
+        }
+
+        .video-container video {
+            transform: scaleX(-1); /* Flip horizontally */
+        }
+    </style>
+</head>
+<body>
+
+<a href="/">Go back to Main Page</a>
+<h1>Video Replay</h1>
+<video id="video" controls width="640" height="360">
+    <source src="{{ video_path }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<title>Image Gallery</title>
+    <!-- Include any necessary CSS stylesheets -->
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 2px solid #000; /* 添加表格外框線 */
+        }
+        th, td {
+            border: 1px solid #000; /* 添加表格內元素的框線 */
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+
+<table id="imageTable">
+    <h1>Result Images</h1>
+    <tbody>
+        <tr>
+            <td></td>
+            <td>Thumb</td>
+            <td>Index finger</td>
+            <td>Middle finger</td>
+            <td>Ring finger</td>
+            <td>Little finger</td>
+        </tr>
+        <tr>
+            <td>MCPJ</td>
+            {% for image in inner_image_list %}
+            <td><a href="{{ url_for('images', filename=image) }}" target="_blank">Image</a></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>PIPJ</td>
+            {% for image in middle_image_list %}
+            <td><a href="{{ url_for('images', filename=image) }}" target="_blank">Image</a></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>DIPJ</td>
+            <td>NULL</td>
+            {% for image in outer_image_list %}
+            <td><a href="{{ url_for('images', filename=image) }}" target="_blank">Image</a></td>
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+
+<button onclick="downloadAllImages()">Download All Images</button>
+<script>
+
+function downloadAllImages() {
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", "/download-folder", true);
+
+    xhr.responseType = "blob"; // Receive data as a Blob
+
+    xhr.onload = function() {
+
+        if (xhr.status === 200) {
+
+            // Create a temporary anchor element to trigger the download
+
+            var blob = xhr.response;
+
+            var link = document.createElement("a");
+
+            link.href = window.URL.createObjectURL(blob);
+
+            link.download = "images.zip";
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+        }
+
+    };
+
+    xhr.send();
+
+}
+</script>
+
+<title>Video Gallery</title>
+    <!-- Include any necessary CSS stylesheets -->
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 2px solid #000; /* 添加表格外框線 */
+        }
+        th, td {
+            border: 1px solid #000; /* 添加表格內元素的框線 */
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+
+<table id="videoTable">
+    <h1>Result Video</h1>
+    <tbody>
+        <tr>
+            <td></td>
+            <td>Thumb</td>
+            <td>Index finger</td>
+            <td>Middle finger</td>
+            <td>Ring finger</td>
+            <td>Little finger</td>
+        </tr>
+        <tr>
+            <td>MCPJ</td>
+            {% for video in innerV %}
+            <td><a href="{{ url_for('inner_combine', filename=video) }}"target="_blank">Video</a></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>PIPJ</td>
+            {% for video in middleV %}
+            <td><a href="{{ url_for('middle_combine', filename=video) }}"target="_blank">Video</a></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>DIPJ</td>
+            <td>NULL</td>
+            {% for video in outerV %}
+            <td><a href="{{ url_for('outer_combine', filename=video) }}"target="_blank">Video</a></td>
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+
+<button onclick="downloadAllCombibeVideos()">Download All Combine Videos</button>
+
+
+
+<script>
+function downloadAllCombibeVideos() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/download-combine", true);
+    xhr.responseType = "blob"; // Receive data as a Blob
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // Create a temporary anchor element to trigger the download
+            var blob = xhr.response;
+            var link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "combine_videos.zip";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
+    xhr.send();
+}
+</script>
+
+<title>Minimum Gallery</title>
+    <!-- Include any necessary CSS stylesheets -->
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 2px solid #000; /* 添加表格外框線 */
+        }
+        th, td {
+            border: 1px solid #000; /* 添加表格內元素的框線 */
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+
+<table id="minimumTable">
+    <h1>Minimum degree Table</h1>
+    <tbody>
+        <tr>
+            <td></td>
+            <td>Thumb</td>
+            <td>Index finger</td>
+            <td>Middle finger</td>
+            <td>Ring finger</td>
+            <td>Little finger</td>
+        </tr>
+        <tr>
+            <td>MCPJ</td>
+            <td>{{ data1[0][0] }}</td>
+            <td>{{ data1[0][1] }}</td>
+            <td>{{ data1[0][2] }}</td>
+            <td>{{ data1[0][3] }}</td>
+            <td>{{ data1[0][4] }}</td>
+        </tr>
+        <tr>
+            <td>PIPJ</td>
+            <td>{{ data1[1][0] }}</td>
+            <td>{{ data1[1][1] }}</td>
+            <td>{{ data1[1][2] }}</td>
+            <td>{{ data1[1][3] }}</td>
+            <td>{{ data1[1][4] }}</td>
+        </tr>
+        <tr>
+            <td>DIPJ</td>
+            <td>NULL</td>
+            <td>{{ data1[2][0] }}</td>
+            <td>{{ data1[2][1] }}</td>
+            <td>{{ data1[2][2] }}</td>
+            <td>{{ data1[2][3] }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<title>Maximum Gallery</title>
+    <!-- Include any necessary CSS stylesheets -->
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 2px solid #000; /* 添加表格外框線 */
+        }
+        th, td {
+            border: 1px solid #000; /* 添加表格內元素的框線 */
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+
+<table id="maximumTable">
+    <h1>Maximum degree Table</h1>
+    <tbody>
+        <tr>
+            <td></td>
+            <td>Thumb</td>
+            <td>Index finger</td>
+            <td>Middle finger</td>
+            <td>Ring finger</td>
+            <td>Little finger</td>
+        </tr>
+        <tr>
+            <td>MCPJ</td>
+            <td>{{ data2[0][0] }}</td>
+            <td>{{ data2[0][1] }}</td>
+            <td>{{ data2[0][2] }}</td>
+            <td>{{ data2[0][3] }}</td>
+            <td>{{ data2[0][4] }}</td>
+        </tr>
+        <tr>
+            <td>PIPJ</td>
+            <td>{{ data2[1][0] }}</td>
+            <td>{{ data2[1][1] }}</td>
+            <td>{{ data2[1][2] }}</td>
+            <td>{{ data2[1][3] }}</td>
+            <td>{{ data2[1][4] }}</td>
+        </tr>
+        <tr>
+            <td>DIPJ</td>
+            <td>NULL</td>
+            <td>{{ data2[2][0] }}</td>
+            <td>{{ data2[2][1] }}</td>
+            <td>{{ data2[2][2] }}</td>
+            <td>{{ data2[2][3] }}</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Webcam Recorder for Lefthand</title>
+        <style>
+            #video-container {
+                display: flex;
+            }
+            #video, #video-to-play {
+                width: 600px; /* Fixed width */
+                height: 400px; /* Fixed height */
+                margin: 0 10px;
+            }
+            #video {
+                transform: scaleX(-1); /* Flip horizontally */
+            }
+        </style>
+    </head>
+<body>
+    <h1>Webcam Recorder for Lefthand</h1>
+    <div id="video-container">
+        <video id="video" autoplay></video>
+        <video id="video-to-play" controls></video>
+    </div>
+    <button id="startRecord">Start Recording</button>
+    <button id="stopRecord" disabled>Stop Recording</button>
+    <br>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="video" accept="video/*" style="display: none;">
+        <button type="submit" id="uploadButton" disabled>Upload Video</button>
+    </form>
+
+    <script>
+        const video = document.getElementById('video');
+        const videoToPlay = document.getElementById('video-to-play');
+        const startRecordButton = document.getElementById('startRecord');
+        const stopRecordButton = document.getElementById('stopRecord');
+        const uploadButton = document.getElementById('uploadButton');
+        const uploadForm = document.getElementById('uploadForm');
+
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    video.src = url;
+
+                    const videoFile = new File([blob], 'recorded-video.webm');
+                    const formData = new FormData();
+                    formData.append('video', videoFile);
+
+                    uploadForm.onsubmit = (e) => {
+                        e.preventDefault();
+                        fetch('/upload', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const uploadSuccessMessage = document.createElement('div');
+                            uploadSuccessMessage.textContent = data.success;
+                            
+                            const viewResultsButton = document.createElement('button');
+                            viewResultsButton.textContent = 'Process';
+                            viewResultsButton.onclick = function() {
+                                window.location.href = '/process-lefthand-video'; // Redirect to the results page
+                            };
+
+                            uploadSuccessMessage.appendChild(viewResultsButton);
+                            document.body.appendChild(uploadSuccessMessage);
+
+                            recordedChunks = [];
+                            startRecordButton.disabled = false;
+                            stopRecordButton.disabled = true;
+                            uploadButton.disabled = true;
+                                                })
+                        .catch(error => alert(error.error));
+                    };
+                };
+            })
+            .catch((error) => console.error('Error accessing webcam:', error));
+
+        // Start recording when the video starts playing
+        videoToPlay.addEventListener('play', () => {
+            startRecordButton.disabled = true;
+            stopRecordButton.disabled = false;
+            setTimeout(() => {
+                mediaRecorder.start();
+            }, 5000); // Delay recording start by 5000 milliseconds (5 seconds)
+        });
+
+        // Stop recording when the video stops playing
+        videoToPlay.addEventListener('pause', () => {
+            mediaRecorder.stop();
+            stopRecordButton.disabled = true;
+            uploadButton.disabled = false;
+        });
+
+        startRecordButton.addEventListener('click', () => {
+            startRecordButton.disabled = true;
+            stopRecordButton.disabled = false;
+            // Start playing the video
+            videoToPlay.src = 'static/movement 7-highlight.mp4'; // Change this to your video file path
+            videoToPlay.play();
+        });
+
+        stopRecordButton.addEventListener('click', () => {
+            // Pause the video
+            videoToPlay.pause();
+        });
+
+    </script>
+</body>
+</html>
