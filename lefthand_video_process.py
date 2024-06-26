@@ -9,7 +9,6 @@ import threading
 import pygame.mixer
 import pygame.time
 import pafy
-import youtube_dl
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -245,9 +244,9 @@ while True:
         cv2.destroyAllWindows()
         cap.release()
         break
-    np.save('outer_finger_angles.npy', np.array(outer_finger_angles))
-    np.save('middle_finger_angles.npy', np.array(middle_finger_angles))
-    np.save('inner_finger_angles.npy', np.array(inner_finger_angles))
+    np.save('outer_finger_angles_website.npy', np.array(outer_finger_angles))
+    np.save('middle_finger_angles_website.npy', np.array(middle_finger_angles))
+    np.save('inner_finger_angles_website.npy', np.array(inner_finger_angles))
 
     save_to_csv('o1.csv', outer_finger_angles)
     save_to_csv('m1.csv', middle_finger_angles)
