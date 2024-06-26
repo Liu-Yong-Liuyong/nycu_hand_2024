@@ -9,7 +9,6 @@ import threading
 import pygame.mixer
 import pygame.time
 import pafy
-import youtube_dl
 import numpy as np
 import math
 import matplotlib.pyplot as plt
