@@ -1,0 +1,10 @@
+opencv-python
+mediapipe
+pyautogui
+numpy
+pygame
+pafy
+matplotlib
+Flask>=2.0.0
+moviepy>=1.0.0
+imageio
