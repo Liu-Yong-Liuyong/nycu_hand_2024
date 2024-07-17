@@ -15,4 +15,4 @@ python3 app.py
 ```
 
 
-2024/7/17 update 若要在影片上標註最大最小值可以參考檔案video_plot(MinMaxValue).py
+2024/7/17 update 若要在影片上標註最大最小值可以參考檔案video_plot(MinMaxValue).py 修改video_plot.py
